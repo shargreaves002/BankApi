@@ -10,7 +10,7 @@ public class Customer {
     private String last_name;
     private String email;
     private String password;
-    private Set<Address> addresses = new LinkedHashSet<>();
+    private Address address;
 
     public Long getCustomerId() {
         return CustomerId;
@@ -36,12 +36,12 @@ public class Customer {
         this.last_name = last_name;
     }
 
-    public void setAddress(Set<Address> addresses){
-        this.addresses = addresses;
+    public void setAddress(Address address){
+        this.address = address;
     }
 
-    public Set<Address> getAddress(){
-        return this.addresses;
+    public Address getAddress(){
+        return this.address;
     }
 
     public String getEmail() {

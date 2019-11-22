@@ -8,10 +8,10 @@
 		<version>2.2.1.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.newBankApi</groupId>
-	<artifactId>newBankApi</artifactId>
+	<groupId>com.bankApi</groupId>
+	<artifactId>bankApi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>newBankApi</name>
+	<name>bankApi</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

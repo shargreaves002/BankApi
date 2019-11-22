@@ -6,18 +6,23 @@ import com.bankApi.bankApi.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @RestController
 public class CustomerController {
-    @Autowired
+
     private CustomerService customerService;
+
+    @Autowired
+    public CustomerController (CustomerService customerService) {
+        Assert.notNull(customerService, "Customer Service must not be null.");
+        this.customerService = customerService;
+    }
 
     @GetMapping("/customers")
     public ResponseEntity<?> getAllCustomers(){
@@ -58,7 +63,6 @@ public class CustomerController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    //TODO: PUT mapping for /customer/{id}
     @PutMapping("/customers/{id}")
     public ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable long id) {
         Response response= new Response();

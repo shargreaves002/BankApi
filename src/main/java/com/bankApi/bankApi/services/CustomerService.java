@@ -115,14 +115,5 @@ public class CustomerService {
 
         // get the updated info from the customer to return
         return this.findById(id);
-        /*Customer customerToReturn = jdbcTemplate.query("SELECT * FROM Customer WHERE CustomerId = ?", new Object[] {id}, new BeanPropertyRowMapper<>(Customer.class)).get(0);
-        // get their address
-        Address addressToReturn = jdbcTemplate.query("SELECT * FROM Address WHERE AddressId = (SELECT AddressId FROM Customer_Address WHERE CustomerId = ?)", new Object[] {id}, new BeanPropertyRowMapper<>(Address.class)).get(0);
-        // get the address ID
-        addressToReturn.setId(jdbcTemplate.queryForObject("SELECT * FROM Address WHERE street_number = ? AND street_name = ? AND city = ? AND state = ? AND zip = ?",
-                new Object[]{addressToReturn.getStreet_number(), addressToReturn.getStreet_name(), addressToReturn.getCity(), addressToReturn.getState(), addressToReturn.getZip()}, Long.class));
-        // set their address
-        customerToReturn.setAddress(addressToReturn);
-        return customerToReturn;*/
     }
 }

@@ -45,8 +45,7 @@ public class DepositController {
     public ResponseEntity<?> getDepositsForAccount(@PathVariable Long id){
         Response response = new Response();
         HttpStatus statusCode;
-        Optional<Account> account = accountService.findById(id);
-        if (account.isPresent()) {
+        if (accountService.existsById(id)) {
             response.setCode(201);
             List<Deposit> d = depositService.findAllByAccountId(id);
             response.setData(d);
@@ -63,8 +62,7 @@ public class DepositController {
     public ResponseEntity<?> createDeposit(@RequestBody Deposit deposit, @PathVariable Long id) {
         Response response = new Response();
         HttpStatus statusCode;
-        Optional<Account> account = accountService.findById(id);
-        if (account.isPresent()) {
+        if (accountService.existsById(id)) {
             response.setCode(201);
             Deposit createdDeposit = depositService.createDeposit(deposit, id);
             response.setData(new ArrayList<>(Collections.singleton(createdDeposit)));

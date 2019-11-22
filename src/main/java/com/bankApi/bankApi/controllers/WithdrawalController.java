@@ -45,8 +45,7 @@ public class WithdrawalController {
     public ResponseEntity<?> getWithdrawalsForAccount(@PathVariable Long id){
         Response response = new Response();
         HttpStatus statusCode;
-        Optional<Account> account = accountService.findById(id);
-        if (account.isPresent()) {
+        if (accountService.existsById(id)) {
             response.setCode(201);
             List<Withdrawal> d = withdrawalService.findAllByAccountId(id);
             response.setData(d);
@@ -63,8 +62,7 @@ public class WithdrawalController {
     public ResponseEntity<?> createWithdrawal(@RequestBody Withdrawal withdrawal, @PathVariable Long id) {
         Response response = new Response();
         HttpStatus statusCode;
-        Optional<Account> account = accountService.findById(id);
-        if (account.isPresent()) {
+        if (accountService.existsById(id)) {
             response.setCode(201);
             Withdrawal createdWithdrawal = withdrawalService.createWithdrawal(withdrawal, id);
             response.setData(new ArrayList<>(Collections.singleton(createdWithdrawal)));

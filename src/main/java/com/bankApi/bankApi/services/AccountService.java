@@ -2,45 +2,77 @@ package com.bankApi.bankApi.services;
 
 import com.bankApi.bankApi.models.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class AccountService {
-        public Optional<Account> findById(long id){
-            return Optional.empty(); //accountsRepository.findById(id);
+
+        private JdbcTemplate jdbcTemplate;
+
+        @Autowired
+        public AccountService(JdbcTemplate jdbcTemplate) {
+            Assert.notNull(jdbcTemplate, "Jdbc Template must not be null.");
+            this.jdbcTemplate = jdbcTemplate;
+        }
+
+        public Account findById(long id){
+            Account account =  jdbcTemplate.query("SELECT * FROM Account WHERE AccountId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Account.class))).get(0);
+            account.setId(id);
+            return account;
         }
 
         public boolean existsById(long id) {
-            return true; //accountsRepository.existsById(id);
+            List<Account> c = jdbcTemplate.query("SELECT * FROM Account WHERE AccountId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Account.class)));
+            return !c.isEmpty();
         }
 
         public void deleteById(long id) {
-            // accountsRepository.deleteById(id);
+            jdbcTemplate.update("DELETE FROM account WHERE AccountId = ?", id);
         }
 
-        public void save(Account commit) {
-            // accountsRepository.save(commit);
+        public Account save(Account account) {
+            jdbcTemplate.update("INSERT INTO account (type, nickname, rewards, balance, CustomerId) VALUES (?, ?, ?, ?, ?)",
+                    account.getType().toString(), account.getNickname(), account.getRewards(), account.getBalance(), account.getCustomerId());
+            Long id = jdbcTemplate.queryForObject("SELECT AccountId FROM Account WHERE nickname = ?", new Object[] {account.getNickname()}, Long.class);
+            account.setId(id);
+            return account;
         }
 
         public List<Account> findAllByCustomerId(Long id) {
-            return null; //accountsRepository.findAllByCustomerId(id);
+            List<Long> accountIds =  jdbcTemplate.queryForList("SELECT AccountId FROM account WHERE CustomerId = ?", new Object[] {id}, Long.class);
+            List<Account> accounts = new ArrayList<>();
+            accountIds.forEach(v -> accounts.add(this.findById(v)));
+            return accounts;
         }
 
         public List<Account> findAll() {
-            return null; //accountsRepository.findAll();
+            List<Long> accountIds =  jdbcTemplate.queryForList("SELECT AccountId FROM account", Long.class);
+            List<Account> accounts = new ArrayList<>();
+            accountIds.forEach(v -> accounts.add(this.findById(v)));
+            return accounts;
         }
 
-        public void updateAccount(Account account, long id) {
-            /*Account accountToUpdate = accountsRepository.getOne(id);
-            if (account.getType() != null) accountToUpdate.setType(account.getType());
-            if (account.getNickname() != null) accountToUpdate.setNickname(account.getNickname());
-            if (account.getBalance() != null) accountToUpdate.setBalance(account.getBalance());
-            if (account.getRewards() != null) accountToUpdate.setRewards(account.getRewards());
-
-            accountsRepository.save(accountToUpdate);*/
-
+        public Account updateAccount(Account account, long id) {
+            if (account.getType() != null) {
+                jdbcTemplate.update("UPDATE Account SET type = ? WHERE AccountId = ?", account.getType().toString(), id);
+            }
+            if (account.getNickname() != null) {
+                jdbcTemplate.update("UPDATE Account SET nickname = ? WHERE AccountId = ?", account.getNickname(), id);
+            }
+            if (account.getBalance() != null) {
+                jdbcTemplate.update("UPDATE Account SET balance = ? WHERE AccountId = ?", account.getBalance(), id);
+            }
+            if (account.getRewards() != null) {
+                jdbcTemplate.update("UPDATE Account SET rewards = ? WHERE AccountId = ?", account.getRewards(), id);
+            }
+            return this.findById(id);
         }
 }

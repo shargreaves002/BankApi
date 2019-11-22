@@ -88,13 +88,12 @@ public class AccountController {
     public ResponseEntity<?> createAccount(@RequestBody Account account, @PathVariable("id") long id){
         Response response = new Response();
         HttpStatus statusCode;
-        Optional<Customer> customer = customerService.findById(id);
-        if(!customer.isPresent()){
+        if(!customerService.existsById(id)){
             response.setCode(404);
             response.setMessage("error creating customers account");
             statusCode = HttpStatus.NOT_FOUND;
         }else{
-//            StatusCode for 201
+            Customer customer = customerService.findById(id);
             account.setCustomerId(id);
             accountService.save(account);
             response.setCode(201);

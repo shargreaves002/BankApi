@@ -1,7 +1,6 @@
 package com.bankApi.bankApi.services;
 
 import com.bankApi.bankApi.models.Deposit;
-import com.bankApi.bankApi.repositories.DepositsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,30 +10,27 @@ import java.util.Optional;
 @Service
 public class DepositService {
 
-    @Autowired
-    private DepositsRepository depositsRepository;
-
     public List<Deposit> findAllByAccountId(Long id){
-        return depositsRepository.findAllByAccountId(id);
+        return null; // depositsRepository.findAllByAccountId(id);
     }
 
     public Optional<Deposit> findById(long id) {
-        return depositsRepository.findById(id);
+        return Optional.empty(); //depositsRepository.findById(id);
     }
 
     public Deposit updateDeposit(Deposit deposit, long id) {
-        Deposit depositToUpdate = depositsRepository.getOne(id);
+        /*Deposit depositToUpdate = depositsRepository.getOne(id);
         if (deposit.getType() != null) depositToUpdate.setType(deposit.getType());
         if (deposit.getAmount() != null) depositToUpdate.setAmount(deposit.getAmount());
         if (deposit.getStatus() != null) depositToUpdate.setStatus(deposit.getStatus());
         if (deposit.getMedium() != null) depositToUpdate.setMedium(deposit.getMedium());
         if (deposit.getDescription() != null) depositToUpdate.setDescription(deposit.getDescription());
-        depositsRepository.save(depositToUpdate);
-        return depositToUpdate;
+        depositsRepository.save(depositToUpdate);*/
+        return null; // depositToUpdate;
     }
 
     public void deleteById(Long id) {
-        depositsRepository.deleteById(id);
+        // depositsRepository.deleteById(id);
     }
 
     public Deposit createDeposit(Deposit deposit, Long id) {
@@ -48,11 +44,11 @@ public class DepositService {
         submit.setStatus(deposit.getStatus());
         submit.setAccountId(id);
 
-        depositsRepository.save(submit);
+        // depositsRepository.save(submit);
         return submit;
     }
 
     public boolean existsById(Long id) {
-        return depositsRepository.existsById(id);
+        return true; //depositsRepository.existsById(id);
     }
 }

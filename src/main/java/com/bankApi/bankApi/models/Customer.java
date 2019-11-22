@@ -1,30 +1,23 @@
 package com.bankApi.bankApi.models;
 
-import javax.persistence.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Entity
 public class Customer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private Long CustomerId;
     private String first_name;
     private String last_name;
     private String email;
     private String password;
+    private Set<Address> addresses = new LinkedHashSet<>();
 
-    @OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name="ADDRESS_ID")
-    private Set<Address> addresses;
-
-    public Long getId() {
-        return id;
+    public Long getCustomerId() {
+        return CustomerId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCustomerId(Long customerId) {
+        CustomerId = customerId;
     }
 
     public String getFirst_name() {

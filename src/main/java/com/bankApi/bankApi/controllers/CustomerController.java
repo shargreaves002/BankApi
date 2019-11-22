@@ -59,4 +59,20 @@ public class CustomerController {
     }
 
     //TODO: PUT mapping for /customer/{id}
+    @PutMapping("/customers/{id}")
+    public ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable long id) {
+        Response response= new Response();
+        HttpStatus statusCode;
+        if (customerService.existsById(id)) {
+            Customer updatedCustomer = customerService.updateCustomer(customer, id);
+            response.setData(Collections.singletonList(updatedCustomer));
+            response.setCode(202);
+            statusCode = HttpStatus.ACCEPTED;
+        } else {
+            response.setCode(404);
+            response.setMessage("Customer with ID " + id + " not found.");
+            statusCode = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity<>(response, statusCode);
+    }
 }

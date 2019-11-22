@@ -5,7 +5,6 @@ import com.bankApi.bankApi.models.Response;
 import com.bankApi.bankApi.models.Withdrawal;
 import com.bankApi.bankApi.services.AccountService;
 import com.bankApi.bankApi.services.WithdrawalService;
-import com.newBankApi.newBankApi.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

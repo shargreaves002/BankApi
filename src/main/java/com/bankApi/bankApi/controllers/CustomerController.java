@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CustomerController {
@@ -35,26 +35,26 @@ public class CustomerController {
     public ResponseEntity<?> getCustomerById(@PathVariable long id) {
         HttpStatus statusCode;
         Response response = new Response();
-        Optional<Customer> c = customerService.findById(id);
-        if (!c.isPresent()) {
+        if (!customerService.existsById(id)) {
             response.setCode(404);
             response.setMessage("Error fetching account: " + id);
             statusCode = HttpStatus.NOT_FOUND;
         } else {
+            Customer c = customerService.findById(id);
             response.setCode(200);
             response.setMessage("Success");
-            response.setData(new ArrayList<>(Collections.singleton(c.get())));
+            response.setData(new ArrayList<>(Collections.singleton(c)));
             statusCode = HttpStatus.OK;
         }
         return new ResponseEntity<>(response, statusCode);
     }
     @PostMapping("/customers")
-    public ResponseEntity<?> createCustomer(@RequestBody Customer customer) throws IOException {
+    public ResponseEntity<?> createCustomer(@RequestBody Customer customer){
         Response response= new Response();
         response.setCode(201);
         response.setMessage("Customer account created");
-        response.setData(new ArrayList<>(Collections.singleton(customer)));
-        customerService.save(customer);
+        Customer savedCustomer = customerService.save(customer);
+        response.setData(new ArrayList<>(Collections.singleton(savedCustomer)));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

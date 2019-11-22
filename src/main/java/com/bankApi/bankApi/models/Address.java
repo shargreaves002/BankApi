@@ -2,19 +2,15 @@ package com.bankApi.bankApi.models;
 
 import javax.persistence.*;
 
-@Entity
 public class Address {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ADDRESS_ID")
     private Long id;
 
-    private String street_number;
+    private Integer street_number;
     private String street_name;
     private String city;
     private String state;
-    private String zip;
+    private Integer zip;
 
     public Long getId() {
         return id;
@@ -24,11 +20,11 @@ public class Address {
         this.id = id;
     }
 
-    public String getStreet_number() {
+    public Integer getStreet_number() {
         return street_number;
     }
 
-    public void setStreet_number(String street_number) {
+    public void setStreet_number(Integer street_number) {
         this.street_number = street_number;
     }
 
@@ -56,11 +52,11 @@ public class Address {
         this.state = state;
     }
 
-    public String getZip() {
+    public Integer getZip() {
         return zip;
     }
 
-    public void setZip(String zip) {
+    public void setZip(Integer zip) {
         this.zip = zip;
     }
 }

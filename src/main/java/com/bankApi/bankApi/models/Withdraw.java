@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Withdrawal {
+public class Withdraw {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

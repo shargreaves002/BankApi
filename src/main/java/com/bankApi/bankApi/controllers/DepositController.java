@@ -1,6 +1,5 @@
 package com.bankApi.bankApi.controllers;
 
-import com.bankApi.bankApi.models.Account;
 import com.bankApi.bankApi.models.Deposit;
 import com.bankApi.bankApi.models.Response;
 import com.bankApi.bankApi.services.AccountService;
@@ -8,28 +7,34 @@ import com.bankApi.bankApi.services.DepositService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class DepositController {
 
-    @Autowired
     private DepositService depositService;
 
-    @Autowired
     private AccountService accountService;
+
+    @Autowired
+    public DepositController(DepositService depositService, AccountService accountService){
+        Assert.notNull(depositService, "Deposit Service must not be null.");
+        Assert.notNull(accountService, "Account Service must not be null.");
+        this.depositService = depositService;
+        this.accountService = accountService;
+    }
 
     @GetMapping("/deposits/{id}")
     public ResponseEntity<?> getDepositById(@PathVariable long id){
         Response response = new Response();
         HttpStatus statusCode;
-        Optional<Deposit> d = depositService.findById(id);
-        if (d.isPresent()) {
+        if (depositService.existsById(id)) {
+            Deposit d = depositService.findById(id);
             response.setCode(200);
             response.setData(new ArrayList<>(Collections.singleton(d)));
             statusCode = HttpStatus.OK;

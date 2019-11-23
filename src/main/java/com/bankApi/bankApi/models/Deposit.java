@@ -8,12 +8,10 @@ import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Deposit {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -25,8 +23,6 @@ public class Deposit {
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
-    @JsonProperty("account_id")
-    @Column(name = "account_id")
     private Long accountId;
 
     @Enumerated(EnumType.STRING)

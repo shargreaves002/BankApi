@@ -1,16 +1,10 @@
 package com.bankApi.bankApi.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
-import java.util.Set;
 
-@Entity
+
 public class Account {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
         // A list of named constant and defines a class type, Enumerations can have constructors, methods and instance variables.
         @Enumerated(EnumType.STRING)
@@ -19,18 +13,7 @@ public class Account {
         private int rewards;
         private double balance;
 
-        @JsonProperty("customer_id")
         private long customerId;
-
-    @JsonIgnore
-    @OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name="account_id")
-    private Set<Deposit> deposits;
-
-    @JsonIgnore
-    @OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name="account_id")
-    private Set<Withdraw> withdraws;
 
         public Long getId() {
             return id;
@@ -65,7 +48,7 @@ public class Account {
         }
 
         public Double getBalance() {
-            Double balance = 0.0;
+            /*Double balance = 0.0;
             if (deposits != null) {
                 for (Deposit i : deposits) {
                     if (i.getMedium().equals(TransactionMedium.Balance) && i.getStatus().equals(TransactionStatus.Completed))
@@ -77,7 +60,7 @@ public class Account {
                     if (i.getMedium().equals(TransactionMedium.Balance) && i.getStatus().equals(TransactionStatus.Completed))
                         balance -= i.getAmount();
                 }
-            }
+            }*/
             return balance;
         }
 

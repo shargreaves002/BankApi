@@ -42,7 +42,7 @@ public class WithdrawService {
     }
 
     public Withdraw findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM Withdraws WHERE WithdrawId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Withdraw.class))).get(0); //WithdrawsRepository.findById(id);
+        return jdbcTemplate.query("SELECT * FROM Withdraw WHERE WithdrawId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Withdraw.class))).get(0); //WithdrawsRepository.findById(id);
     }
 
     public Withdraw updateWithdraw(Withdraw Withdraw, long id) {
@@ -114,7 +114,7 @@ public class WithdrawService {
     public Withdraw createWithdraw(Withdraw Withdraw, Long id) {
         jdbcTemplate.update("INSERT INTO Withdraw (type, status, medium, date, accountId, amount, description) VALUES (?, ?, ?, ?, ?,?,?)",
                 Withdraw.getType(),Withdraw.getStatus(),Withdraw.getMedium(),Withdraw.getTransaction_date(),id,Withdraw.getAmount(),Withdraw.getDescription());
-        Long accountNumber = jdbcTemplate.queryForObject("SELECT Id FROM Withdraw WHERE date = ? and accountId = ?", new Object[] {Withdraw.getTransaction_date(), Withdraw.getAccountId()}, Long.class);
+        Long withdrawId = jdbcTemplate.queryForObject("SELECT WithdrawId FROM Withdraw WHERE date = ? and accountId = ?", new Object[] {Withdraw.getTransaction_date(), Withdraw.getAccountId()}, Long.class);
 
         if(Withdraw.getMedium()== TransactionMedium.Balance && Withdraw.getStatus() == TransactionStatus.Completed){
             Double balance = jdbcTemplate.queryForObject("SELECT BALANCE from Account WHERE AccountId = ?", new Object[] {id}, Double.class);
@@ -123,7 +123,7 @@ public class WithdrawService {
             accounts.setBalance(balance);
             accountService.updateAccount(accounts, id);
         }
-        Withdraw.setId(accountNumber);
+        Withdraw.setId(withdrawId);
         return Withdraw;
     }
 

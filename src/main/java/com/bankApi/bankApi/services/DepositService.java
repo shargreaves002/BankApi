@@ -42,7 +42,7 @@ public class DepositService {
     }
 
     public Deposit findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM Deposits WHERE DepositId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Deposit.class))).get(0); //depositsRepository.findById(id);
+        return jdbcTemplate.query("SELECT * FROM Deposit WHERE DepositId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Deposit.class))).get(0); //depositsRepository.findById(id);
     }
 
     public Deposit updateDeposit(Deposit deposit, long id) {
@@ -114,7 +114,7 @@ public class DepositService {
     public Deposit createDeposit(Deposit deposit, Long id) {
         jdbcTemplate.update("INSERT INTO deposit (type, status, medium, date, accountId, amount, description) VALUES (?, ?, ?, ?, ?,?,?)",
               deposit.getType(),deposit.getStatus(),deposit.getMedium(),deposit.getTransaction_date(),id,deposit.getAmount(),deposit.getDescription());
-        Long accountNumber = jdbcTemplate.queryForObject("SELECT Id FROM Deposit WHERE date = ? and accountId = ?", new Object[] {deposit.getTransaction_date(), deposit.getAccountId()}, Long.class);
+        Long depositId = jdbcTemplate.queryForObject("SELECT DepositId FROM Deposit WHERE date = ? and accountId = ?", new Object[] {deposit.getTransaction_date(), deposit.getAccountId()}, Long.class);
 
         if(deposit.getMedium()== TransactionMedium.Balance && deposit.getStatus() == TransactionStatus.Completed){
             Double balance = jdbcTemplate.queryForObject("SELECT BALANCE from Account WHERE AccountId = ?", new Object[] {id}, Double.class);
@@ -123,7 +123,7 @@ public class DepositService {
             accounts.setBalance(balance);
             accountService.updateAccount(accounts, id);
         }
-        deposit.setId(accountNumber);
+        deposit.setId(depositId);
         return deposit;
     }
 

@@ -7,11 +7,8 @@ import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@Entity
 public class Bill {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nickname;
@@ -20,27 +17,15 @@ public class Bill {
     private String creation_date;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @JsonProperty("payment_date")
-    @Column(name = "payment_date")
     private String paymentDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @JsonProperty("recurring_date")
-    @Column(name = "recurring_date")
     private String recurringDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @JsonProperty("upcoming_payment_date")
-    @Column(name = "upcoming_payment_date")
     private String upcomingPaymentDate;
 
-    @JsonProperty("payment_amount")
-    @Column(name = "payment_amount")
     private Double paymentAmount;
-
-
-    @JsonProperty("account_id")
-    @Column(name = "account_id")
     private Long accountId;
 
     @Enumerated(EnumType.STRING)

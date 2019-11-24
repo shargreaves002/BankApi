@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class CustomerController {
 
     private CustomerService customerService;

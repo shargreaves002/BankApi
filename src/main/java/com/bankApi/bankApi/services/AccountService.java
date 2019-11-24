@@ -61,7 +61,7 @@ public class AccountService {
             return accounts;
         }
 
-        public Account updateAccount(Account account, long id) {
+        public Account updateAccount(Account account, Long id) {
             if (account.getType() != null) {
                 jdbcTemplate.update("UPDATE Account SET type = ? WHERE AccountId = ?", account.getType().toString(), id);
             }

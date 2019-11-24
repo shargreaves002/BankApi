@@ -30,7 +30,7 @@ public class Account {
     @JsonIgnore
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="account_id")
-    private Set<Withdrawal> withdrawals;
+    private Set<Withdraw> withdraws;
 
         public Long getId() {
             return id;
@@ -72,8 +72,8 @@ public class Account {
                         balance += i.getAmount();
                 }
             }
-            if (withdrawals != null) {
-                for (Withdrawal i : withdrawals) {
+            if (withdraws != null) {
+                for (Withdraw i : withdraws) {
                     if (i.getMedium().equals(TransactionMedium.Balance) && i.getStatus().equals(TransactionStatus.Completed))
                         balance -= i.getAmount();
                 }

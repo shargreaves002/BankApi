@@ -1,8 +1,7 @@
 package com.bankApi.bankApi.controllers;
 
-import com.bankApi.bankApi.models.Account;
 import com.bankApi.bankApi.models.Response;
-import com.bankApi.bankApi.models.Withdrawal;
+import com.bankApi.bankApi.models.Withdraw;
 import com.bankApi.bankApi.services.AccountService;
 import com.bankApi.bankApi.services.WithdrawalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class WithdrawalController {
     public ResponseEntity<?> getWithdrawalById(@PathVariable long id){
         Response response = new Response();
         HttpStatus statusCode;
-        Optional<Withdrawal> d = withdrawalService.findById(id);
+        Optional<Withdraw> d = withdrawalService.findById(id);
         if (d.isPresent()) {
             response.setCode(200);
             response.setData(new ArrayList<>(Collections.singleton(d)));
@@ -48,7 +47,7 @@ public class WithdrawalController {
         HttpStatus statusCode;
         if (accountService.existsById(id)) {
             response.setCode(201);
-            List<Withdrawal> d = withdrawalService.findAllByAccountId(id);
+            List<Withdraw> d = withdrawalService.findAllByAccountId(id);
             response.setData(d);
             statusCode = HttpStatus.OK;
         } else {
@@ -60,13 +59,13 @@ public class WithdrawalController {
     }
 
     @PostMapping("/accounts/{id}/withdrawals")
-    public ResponseEntity<?> createWithdrawal(@RequestBody Withdrawal withdrawal, @PathVariable Long id) {
+    public ResponseEntity<?> createWithdrawal(@RequestBody Withdraw withdraw, @PathVariable Long id) {
         Response response = new Response();
         HttpStatus statusCode;
         if (accountService.existsById(id)) {
             response.setCode(201);
-            Withdrawal createdWithdrawal = withdrawalService.createWithdrawal(withdrawal, id);
-            response.setData(new ArrayList<>(Collections.singleton(createdWithdrawal)));
+            Withdraw createdWithdraw = withdrawalService.createWithdrawal(withdraw, id);
+            response.setData(new ArrayList<>(Collections.singleton(createdWithdraw)));
             statusCode = HttpStatus.CREATED;
         } else {
             response.setCode(404);
@@ -77,13 +76,13 @@ public class WithdrawalController {
     }
 
     @PutMapping("/withdrawals/{id}")
-    public ResponseEntity<?> updateWithdrawal(@RequestBody Withdrawal withdrawal, @PathVariable Long id) {
+    public ResponseEntity<?> updateWithdrawal(@RequestBody Withdraw withdraw, @PathVariable Long id) {
         Response response = new Response();
         HttpStatus statusCode;
         if (withdrawalService.existsById(id)) {
-            Withdrawal updatedWithdrawal = withdrawalService.updateWithdrawal(withdrawal, id);
+            Withdraw updatedWithdraw = withdrawalService.updateWithdrawal(withdraw, id);
             response.setCode(202);
-            response.setData(Collections.singletonList(updatedWithdrawal));
+            response.setData(Collections.singletonList(updatedWithdraw));
             statusCode = HttpStatus.ACCEPTED;
         } else {
             response.setMessage("Withdrawal with ID " + id + " not found.");

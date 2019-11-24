@@ -8,25 +8,21 @@ import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@Entity
+
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Withdraw {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
     private WithdrawalType type;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss.SSS")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private String transaction_date;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
-    @JsonProperty("account_id")
-    @Column(name = "account_id")
     private Long accountId;
 
     @Enumerated(EnumType.STRING)
@@ -57,7 +53,7 @@ public class Withdraw {
     }
 
     public void setTransaction_date() {
-        this.transaction_date = new SimpleDateFormat("yyyy-MM-dd@HH:mm:ss.SSS").format(new Date());
+        this.transaction_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 
     public void setTransaction_date(String transaction_date) {

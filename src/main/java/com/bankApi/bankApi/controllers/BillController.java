@@ -50,12 +50,12 @@ public class BillController {
     public ResponseEntity<?> getBillById(@PathVariable("billId") Long id) {
         HttpStatus statusCode;
         Response response = new Response();
-        Optional<Bill> bill = billService.findById(id);
-        if (!bill.isPresent()) {
+        if (!billService.existsById(id)) {
             response.setCode(404);
             response.setMessage("Bill with ID " + id + " not found.");
             statusCode = HttpStatus.NOT_FOUND;
         } else {
+            Bill bill = billService.findById(id);
             response.setCode(200);
             response.setData(new ArrayList<>(Collections.singleton(bill)));
             statusCode = HttpStatus.OK;

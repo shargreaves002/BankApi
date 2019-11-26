@@ -117,4 +117,14 @@ public class CustomerService {
         // get the updated info from the customer to return
         return this.findById(id);
     }
+
+    public boolean existsByEmail(String email) {
+        List<Customer> c = jdbcTemplate.query("SELECT * FROM Customer WHERE email = ?", new Object[] {email}, (new BeanPropertyRowMapper<>(Customer.class)));
+        return !c.isEmpty();
+    }
+
+    public Customer findByEmail(String email) {
+        Long id = jdbcTemplate.queryForObject("SELECT CustomerId FROM Customer WHERE email = ?", new Object[] {email}, Long.class);
+        return this.findById(id);
+    }
 }

@@ -42,9 +42,9 @@ public class CustomerController {
         HttpStatus statusCode;
         Response response = new Response();
         if (!customerService.existsById(id)) {
-            response.setCode(404);
-            response.setMessage("Error fetching account: " + id);
-            statusCode = HttpStatus.NOT_FOUND;
+            response.setCode(200);
+            response.setMessage("There was no customer with that ID");
+            statusCode = HttpStatus.OK;
         } else {
             Customer c = customerService.findById(id);
             response.setCode(200);
@@ -54,6 +54,25 @@ public class CustomerController {
         }
         return new ResponseEntity<>(response, statusCode);
     }
+
+    @GetMapping("/customers/email/{email}")
+    public ResponseEntity<?> getCustomerByEmail(@PathVariable String email){
+        HttpStatus statusCode;
+        Response response = new Response();
+        if (!customerService.existsByEmail(email)) {
+            response.setCode(200);
+            response.setMessage("There was no customer with that email.");
+            statusCode = HttpStatus.OK;
+        } else {
+            Customer c = customerService.findByEmail(email);
+            response.setCode(200);
+            response.setMessage("Success");
+            response.setData(new ArrayList<>(Collections.singleton(c)));
+            statusCode = HttpStatus.OK;
+        }
+        return new ResponseEntity<>(response, statusCode);
+    }
+
     @PostMapping("/customers")
     public ResponseEntity<?> createCustomer(@RequestBody Customer customer){
         Response response= new Response();

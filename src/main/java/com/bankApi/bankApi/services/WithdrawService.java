@@ -128,7 +128,7 @@ public class WithdrawService {
     }
 
     public boolean existsById(Long id) {
-        List<Withdraw> d= jdbcTemplate.query("SELECT * FROM Withdraw WHERE AccountId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Withdraw.class)));
+        List<Withdraw> d= jdbcTemplate.query("SELECT * FROM Withdraw WHERE WithdrawId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Withdraw.class)));
         return !d.isEmpty();
     }
 }

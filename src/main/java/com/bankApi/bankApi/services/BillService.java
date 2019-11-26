@@ -19,7 +19,7 @@ public class BillService {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private BillService(JdbcTemplate jdbcTemplate){
+    public BillService(JdbcTemplate jdbcTemplate){
         Assert.notNull(jdbcTemplate,"jdbcTemplate must not be null");
         this.jdbcTemplate = jdbcTemplate;
     }

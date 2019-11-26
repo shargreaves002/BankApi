@@ -128,7 +128,7 @@ public class DepositService {
     }
 
     public boolean existsById(Long id) {
-        List<Deposit> d= jdbcTemplate.query("SELECT * FROM Deposit WHERE AccountId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Deposit.class)));
+        List<Deposit> d= jdbcTemplate.query("SELECT * FROM Deposit WHERE DepositId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Deposit.class)));
         return !d.isEmpty();
     }
 }

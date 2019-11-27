@@ -17,7 +17,6 @@ public class Withdraw {
     @Enumerated(EnumType.STRING)
     private WithdrawalType type;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private String transaction_date;
 
     @Enumerated(EnumType.STRING)
@@ -50,10 +49,6 @@ public class Withdraw {
 
     public String getTransaction_date() {
         return transaction_date;
-    }
-
-    public void setTransaction_date() {
-        this.transaction_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 
     public void setTransaction_date(String transaction_date) {

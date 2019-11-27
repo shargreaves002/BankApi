@@ -1,6 +1,6 @@
 package com.bankApi.bankApi.models;
 
 public enum WithdrawalType {
-    Withdrawal,
+    Withdraw,
     P2p
 }

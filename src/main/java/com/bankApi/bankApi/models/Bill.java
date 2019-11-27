@@ -11,7 +11,7 @@ public class Bill {
 
     private String nickname;
 
-    private Timestamp creation_date;
+    private String creation_date;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private String paymentDate;
@@ -44,11 +44,11 @@ public class Bill {
         this.nickname = nickname;
     }
 
-    public Timestamp getCreation_date() {
+    public String getCreation_date() {
         return creation_date;
     }
 
-    public void setCreation_date(Timestamp creation_date) {
+    public void setCreation_date(String creation_date) {
         this.creation_date = creation_date;
     }
 

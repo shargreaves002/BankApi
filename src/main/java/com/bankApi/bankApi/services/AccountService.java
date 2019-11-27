@@ -36,6 +36,9 @@ public class AccountService {
         }
 
         public void deleteById(long id) {
+            jdbcTemplate.update("DELETE FROM deposit WHERE AccountId = ?", id);
+            jdbcTemplate.update("DELETE FROM withdraw WHERE AccountId = ?", id);
+            jdbcTemplate.update("DELETE FROM bill WHERE AccountId = ?", id);
             jdbcTemplate.update("DELETE FROM account WHERE AccountId = ?", id);
         }
 

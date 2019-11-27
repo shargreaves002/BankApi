@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,17 +31,17 @@ public class BillService {
     }
 
     public Bill createBill(Bill bill, long id) {
-      jdbcTemplate.update("INSERT INTO bill (nickname, creationDate, paymentDate, recurringDate, upcomingPaymentDate, paymentAmount, accountId, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      bill.getNickname(),bill.getCreation_date(),bill.getPaymentDate(),bill.getRecurringDate(),bill.getUpcomingPaymentDate(),bill.getPaymentAmount(),id, bill.getStatus());
-      Long billId = jdbcTemplate.queryForObject("SELECT BillId FROM Bill WHERE creationDate = ? and accountId = ?",new Object[]{bill.getCreation_date(), bill.getAccountId()}, Long.class);
-
-      bill.setId(billId);
-      return bill;
+        Timestamp time = new Timestamp(new java.util.Date().getTime());
+        jdbcTemplate.update("INSERT INTO bill (nickname, creationDate, paymentDate, recurringDate, upcomingPaymentDate, paymentAmount, accountId, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        bill.getNickname(),time,bill.getPaymentDate(),bill.getRecurringDate(),bill.getUpcomingPaymentDate(),bill.getPaymentAmount(),id, bill.getStatus().toString());
+        Long billId = jdbcTemplate.queryForObject("SELECT MAX(BillId) FROM Bill WHERE accountId = ?",new Object[]{bill.getAccountId()}, Long.class);
+        bill.setId(billId);
+        return bill;
     }
 
     public Bill updateBill(Long id, Bill bill) {
         if (bill.getStatus() != null) {
-            jdbcTemplate.update("UPDATE Bill SET status = ? WHERE BillId = ?", bill.getStatus(), id);
+            jdbcTemplate.update("UPDATE Bill SET status = ? WHERE BillId = ?", bill.getStatus().toString(), id);
         }
         if (bill.getNickname() != null){
             jdbcTemplate.update("UPDATE Bill SET nickname = ? WHERE BillId = ?", bill.getNickname(), id);
@@ -78,6 +79,9 @@ public class BillService {
     }
 
     public Bill findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM Bill WHERE BillId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Bill.class))).get(0);
+        Bill bill = jdbcTemplate.query("SELECT * FROM Bill WHERE BillId = ?", new Object[] {id}, (new BeanPropertyRowMapper<>(Bill.class))).get(0);
+        Timestamp time = jdbcTemplate.queryForObject("SELECT creationDate FROM Bill WHERE BillId = ?", new Object[]{id}, Timestamp.class);
+        bill.setCreation_date(String.format("%1$TD", time));
+        return bill;
     }
 }

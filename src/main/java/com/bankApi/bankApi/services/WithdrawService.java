@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,20 +113,21 @@ public class WithdrawService {
         jdbcTemplate.update("DELETE FROM Withdraw WHERE WithdrawId = ?", id);
     }
 
-    public Withdraw createWithdraw(Withdraw Withdraw, Long id) {
+    public Withdraw createWithdraw(Withdraw withdraw, Long id) {
+        withdraw.setTransaction_date(new Timestamp(Long.parseLong(new java.util.Date().toString())).toString());
         jdbcTemplate.update("INSERT INTO Withdraw (type, status, medium, date, accountId, amount, description) VALUES (?, ?, ?, ?, ?,?,?)",
-                Withdraw.getType(),Withdraw.getStatus(),Withdraw.getMedium(),Withdraw.getTransaction_date(),id,Withdraw.getAmount(),Withdraw.getDescription());
-        Long withdrawId = jdbcTemplate.queryForObject("SELECT WithdrawId FROM Withdraw WHERE date = ? and accountId = ?", new Object[] {Withdraw.getTransaction_date(), Withdraw.getAccountId()}, Long.class);
+                withdraw.getType().toString(),withdraw.getStatus().toString(),withdraw.getMedium().toString(),withdraw.getTransaction_date(),id,withdraw.getAmount(),withdraw.getDescription());
+        Long withdrawId = jdbcTemplate.queryForObject("SELECT MAX(WithdrawId) FROM Withdraw WHERE accountId = ?", new Object[] {withdraw.getAccountId()}, Long.class);
 
-        if(Withdraw.getMedium()== TransactionMedium.Balance && Withdraw.getStatus() == TransactionStatus.Completed){
+        if(withdraw.getMedium()== TransactionMedium.Balance && withdraw.getStatus() == TransactionStatus.Completed){
             Double balance = jdbcTemplate.queryForObject("SELECT BALANCE from Account WHERE AccountId = ?", new Object[] {id}, Double.class);
-            balance += Withdraw.getAmount();
+            balance += withdraw.getAmount();
             Account accounts = new Account ();
             accounts.setBalance(balance);
             accountService.updateAccount(accounts, id);
         }
-        Withdraw.setId(withdrawId);
-        return Withdraw;
+        withdraw.setId(withdrawId);
+        return withdraw;
     }
 
     public boolean existsById(Long id) {

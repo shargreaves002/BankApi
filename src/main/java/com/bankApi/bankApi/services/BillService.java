@@ -30,9 +30,9 @@ public class BillService {
     }
 
     public Bill createBill(Bill bill, long id) {
-      jdbcTemplate.update("INSERT INTO bill (nickname, creation_date, paymentDate, recurringDate, upcomingPaymentDate, paymentAmount, accountId, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      jdbcTemplate.update("INSERT INTO bill (nickname, creationDate, paymentDate, recurringDate, upcomingPaymentDate, paymentAmount, accountId, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       bill.getNickname(),bill.getCreation_date(),bill.getPaymentDate(),bill.getRecurringDate(),bill.getUpcomingPaymentDate(),bill.getPaymentAmount(),id, bill.getStatus());
-      Long billId = jdbcTemplate.queryForObject("SELECT BillId FROM Bill WHERE creation_date = ? and accountId = ?",new Object[]{bill.getCreation_date(), bill.getAccountId()}, Long.class);
+      Long billId = jdbcTemplate.queryForObject("SELECT BillId FROM Bill WHERE creationDate = ? and accountId = ?",new Object[]{bill.getCreation_date(), bill.getAccountId()}, Long.class);
 
       bill.setId(billId);
       return bill;

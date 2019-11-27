@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,9 +113,10 @@ public class DepositService {
     }
 
     public Deposit createDeposit(Deposit deposit, Long id) {
+        deposit.setTransaction_date(new Timestamp(Long.parseLong(new java.util.Date().toString())).toString());
         jdbcTemplate.update("INSERT INTO deposit (type, status, medium, date, accountId, amount, description) VALUES (?, ?, ?, ?, ?,?,?)",
-              deposit.getType(),deposit.getStatus(),deposit.getMedium(),deposit.getTransaction_date(),id,deposit.getAmount(),deposit.getDescription());
-        Long depositId = jdbcTemplate.queryForObject("SELECT DepositId FROM Deposit WHERE date = ? and accountId = ?", new Object[] {deposit.getTransaction_date(), deposit.getAccountId()}, Long.class);
+              deposit.getType().toString(),deposit.getStatus().toString(),deposit.getMedium().toString(),deposit.getTransaction_date(),id,deposit.getAmount(),deposit.getDescription());
+        Long depositId = jdbcTemplate.queryForObject("SELECT MAX(DepositId) FROM Deposit WHERE AccountId = ?", new Object[] {deposit.getAccountId()}, Long.class);
 
         if(deposit.getMedium()== TransactionMedium.Balance && deposit.getStatus() == TransactionStatus.Completed){
             Double balance = jdbcTemplate.queryForObject("SELECT BALANCE from Account WHERE AccountId = ?", new Object[] {id}, Double.class);

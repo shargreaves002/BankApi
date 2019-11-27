@@ -1,11 +1,9 @@
 package com.bankApi.bankApi.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Bill {
 
@@ -13,8 +11,7 @@ public class Bill {
 
     private String nickname;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private String creation_date;
+    private Timestamp creation_date;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private String paymentDate;
@@ -47,15 +44,11 @@ public class Bill {
         this.nickname = nickname;
     }
 
-    public String getCreation_date() {
+    public Timestamp getCreation_date() {
         return creation_date;
     }
 
-    public void setCreation_date() {
-        this.creation_date = new SimpleDateFormat("yyyy-MM-dd@HH:mm:ss.SSS").format(new Date());
-    }
-
-    public void setCreation_date(String creation_date) {
+    public void setCreation_date(Timestamp creation_date) {
         this.creation_date = creation_date;
     }
 

@@ -112,9 +112,10 @@ public class WithdrawService {
 
     public Withdraw createWithdraw(Withdraw withdraw, Long id) {
         Timestamp time = new Timestamp(new java.util.Date().getTime());
+        withdraw.setAccountId(id);
         jdbcTemplate.update("INSERT INTO Withdraw (type, status, medium, date, accountId, amount, description) VALUES (?, ?, ?, ?, ?,?,?)",
                 withdraw.getType().toString(),withdraw.getStatus().toString(),withdraw.getMedium().toString(),time,id,withdraw.getAmount(),withdraw.getDescription());
-        Long withdrawId = jdbcTemplate.queryForObject("SELECT MAX(WithdrawId) FROM Withdraw WHERE accountId = ?", new Object[] {withdraw.getAccountId()}, Long.class);
+        Long withdrawId = jdbcTemplate.queryForObject("SELECT MAX(WithdrawId) FROM Withdraw WHERE accountId = ?", new Object[] {id}, Long.class);
 
         if(withdraw.getMedium()== TransactionMedium.Balance && withdraw.getStatus() == TransactionStatus.Completed){
             Double balance = jdbcTemplate.queryForObject("SELECT BALANCE from Account WHERE AccountId = ?", new Object[] {id}, Double.class);

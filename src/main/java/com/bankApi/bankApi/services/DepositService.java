@@ -8,12 +8,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class DepositService {
+
+    private final static Logger LOGGER = Logger.getLogger(DepositService.class.getName());
 
     private JdbcTemplate jdbcTemplate;
     private AccountService accountService;
@@ -31,7 +35,7 @@ public class DepositService {
     public List<Deposit> findAllByAccountId(Long id){
         List<Long> depositIds = jdbcTemplate.queryForList("SELECT DepositId FROM Deposit WHERE AccountId = ?", new Object[] {id}, Long.class);
         List<Deposit> deposits = new ArrayList<>();
-        if (depositIds != null){
+        if (!depositIds.isEmpty()){
             depositIds.forEach(v -> {
                 Deposit deposit = this.findById(v);
                 deposit.setId(v);
@@ -47,7 +51,7 @@ public class DepositService {
 
     public Deposit updateDeposit(Deposit deposit, long id) {
         if (deposit.getType() != null) {
-            jdbcTemplate.update("UPDATE Deposit SET type = ? WHERE DepositId = ?", deposit.getType(), id);
+            jdbcTemplate.update("UPDATE Deposit SET type = ? WHERE DepositId = ?", deposit.getType().toString(), id);
         }
         if (deposit.getAmount() != null) {
             TransactionStatus currentStatus = jdbcTemplate.queryForObject("SELECT status FROM Deposit WHERE DepositId = ?", new Object[]{id}, new BeanPropertyRowMapper<>(TransactionStatus.class));
@@ -81,7 +85,7 @@ public class DepositService {
                 accounts.setBalance(balance);
                 accountService.updateAccount(accounts, id);
             }
-            jdbcTemplate.update("UPDATE Deposit SET status = ? WHERE DepositId = ?", deposit.getStatus(), id);
+            jdbcTemplate.update("UPDATE Deposit SET status = ? WHERE DepositId = ?", deposit.getStatus().toString(), id);
         }
         if (deposit.getMedium() != null) {
             Double depositAmount = jdbcTemplate.queryForObject("SELECT Amount FROM Deposit WHERE DepositId = ?", new Object[]{id}, Double.class);
@@ -99,7 +103,7 @@ public class DepositService {
                 accounts.setBalance(balance);
                 accountService.updateAccount(accounts, id);
             }
-            jdbcTemplate.update("UPDATE Deposit SET medium = ? WHERE DepositId = ?", deposit.getMedium(), id);
+            jdbcTemplate.update("UPDATE Deposit SET medium = ? WHERE DepositId = ?", deposit.getMedium().toString(), id);
         }
         if (deposit.getDescription() != null) {
             jdbcTemplate.update("UPDATE Deposit SET description = ? WHERE DepositId = ?", deposit.getDescription(), id);
@@ -112,9 +116,12 @@ public class DepositService {
     }
 
     public Deposit createDeposit(Deposit deposit, Long id) {
+
+        Timestamp time = new java.sql.Timestamp(System.currentTimeMillis());
+        deposit.setTransaction_date( time );
         jdbcTemplate.update("INSERT INTO deposit (type, status, medium, date, accountId, amount, description) VALUES (?, ?, ?, ?, ?,?,?)",
-              deposit.getType(),deposit.getStatus(),deposit.getMedium(),deposit.getTransaction_date(),id,deposit.getAmount(),deposit.getDescription());
-        Long depositId = jdbcTemplate.queryForObject("SELECT DepositId FROM Deposit WHERE date = ? and accountId = ?", new Object[] {deposit.getTransaction_date(), deposit.getAccountId()}, Long.class);
+              deposit.getType().toString(),deposit.getStatus().toString(),deposit.getMedium().toString(),time,id,deposit.getAmount(),deposit.getDescription());
+        Long depositId = jdbcTemplate.queryForObject("SELECT MAX(DepositId) FROM Deposit WHERE AccountId = ?", new Object[]{id}, Long.class);
 
         if(deposit.getMedium()== TransactionMedium.Balance && deposit.getStatus() == TransactionStatus.Completed){
             Double balance = jdbcTemplate.queryForObject("SELECT BALANCE from Account WHERE AccountId = ?", new Object[] {id}, Double.class);
@@ -124,6 +131,7 @@ public class DepositService {
             accountService.updateAccount(accounts, id);
         }
         deposit.setId(depositId);
+        deposit.setAccountId(id);
         return deposit;
     }
 

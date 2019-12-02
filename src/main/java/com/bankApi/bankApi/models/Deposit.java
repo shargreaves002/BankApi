@@ -1,11 +1,11 @@
 package com.bankApi.bankApi.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -17,8 +17,7 @@ public class Deposit {
     @Enumerated(EnumType.STRING)
     private DepositType type;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private String transaction_date;
+    private Timestamp transaction_date;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
@@ -48,15 +47,11 @@ public class Deposit {
         this.type = type;
     }
 
-    public String getTransaction_date() {
+    public Timestamp getTransaction_date() {
         return transaction_date;
     }
 
-    public void setTransaction_date() {
-        this.transaction_date = new SimpleDateFormat("yyyy-MM-dd@HH:mm:ss.SSS").format(new Date());
-    }
-
-    public void setTransaction_date(String transaction_date) {
+    public void setTransaction_date(Timestamp transaction_date) {
         this.transaction_date = transaction_date;
     }
 

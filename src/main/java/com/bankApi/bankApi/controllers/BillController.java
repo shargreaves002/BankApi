@@ -9,25 +9,32 @@ import com.bankApi.bankApi.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin
 public class BillController {
 
-    @Autowired
     private BillService billService;
 
-    @Autowired
     private AccountService accountService;
 
-    @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    public BillController (BillService billService, AccountService accountService, CustomerService customerService) {
+        Assert.notNull(billService, "Bill service must not be null.");
+        Assert.notNull(accountService, "Account service must not be null.");
+        Assert.notNull(customerService, "Customer service must not be null.");
+        this.billService = billService;
+        this.accountService = accountService;
+        this.customerService = customerService;
+    }
 
     @GetMapping("/accounts/{accountID}/bills")
     public ResponseEntity<?> getAllBillsForAcc(@PathVariable("accountID") Long id) {
@@ -50,12 +57,12 @@ public class BillController {
     public ResponseEntity<?> getBillById(@PathVariable("billId") Long id) {
         HttpStatus statusCode;
         Response response = new Response();
-        Optional<Bill> bill = billService.findById(id);
-        if (!bill.isPresent()) {
+        if (!billService.existsById(id)) {
             response.setCode(404);
             response.setMessage("Bill with ID " + id + " not found.");
             statusCode = HttpStatus.NOT_FOUND;
         } else {
+            Bill bill = billService.findById(id);
             response.setCode(200);
             response.setData(new ArrayList<>(Collections.singleton(bill)));
             statusCode = HttpStatus.OK;

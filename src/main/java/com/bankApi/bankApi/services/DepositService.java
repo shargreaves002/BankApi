@@ -11,10 +11,13 @@ import org.springframework.util.Assert;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class DepositService {
+
+    private final static Logger LOGGER = Logger.getLogger(DepositService.class.getName());
 
     private JdbcTemplate jdbcTemplate;
 
@@ -45,7 +48,7 @@ public class DepositService {
 
     public Deposit updateDeposit(Deposit deposit, long id) {
         if (deposit.getType() != null) {
-            jdbcTemplate.update("UPDATE Deposit SET type = ? WHERE DepositId = ?", deposit.getType(), id);
+            jdbcTemplate.update("UPDATE Deposit SET type = ? WHERE DepositId = ?", deposit.getType().toString(), id);
         }
         if (deposit.getAmount() != null) {
             String currentStatus = jdbcTemplate.queryForObject("SELECT status FROM Deposit WHERE DepositId = ?", new Object[]{id}, String.class);
@@ -104,18 +107,18 @@ public class DepositService {
     }
 
     public Deposit createDeposit(Deposit deposit, Long id) {
-        Timestamp time = new Timestamp(new java.util.Date().getTime());
-        deposit.setAccountId(id);
+        Timestamp time = new java.sql.Timestamp(System.currentTimeMillis());
+        deposit.setTransaction_date( time );
         jdbcTemplate.update("INSERT INTO deposit (type, status, medium, date, accountId, amount, description) VALUES (?, ?, ?, ?, ?,?,?)",
               deposit.getType().toString(),deposit.getStatus().toString(),deposit.getMedium().toString(),time,id,deposit.getAmount(),deposit.getDescription());
-        Long depositId = jdbcTemplate.queryForObject("SELECT MAX(DepositId) FROM Deposit WHERE AccountId = ?", new Object[] {id}, Long.class);
-
+        Long depositId = jdbcTemplate.queryForObject("SELECT MAX(DepositId) FROM Deposit WHERE AccountId = ?", new Object[]{id}, Long.class);
         if(deposit.getMedium()== TransactionMedium.Balance && deposit.getStatus() == TransactionStatus.Completed){
             Double balance = jdbcTemplate.queryForObject("SELECT BALANCE from Account WHERE AccountId = ?", new Object[] {id}, Double.class);
             balance += deposit.getAmount();
             jdbcTemplate.update("UPDATE Account SET Balance = ? WHERE AccountId = ?",balance, id);
         }
         deposit.setId(depositId);
+        deposit.setAccountId(id);
         return deposit;
     }
 
